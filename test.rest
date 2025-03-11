@@ -1,0 +1,16 @@
+curl http://localhost:5000/api/items ### Berfungsi Menampilkan isi Tabel
+
+###
+curl -X POST -H "Content-Type: application/json" \
+    -d '{"name": "Test Item", "description": "Test Description"}' \
+    http://localhost:5000/api/items ### Berfungsi Menambahkan isi Tabel
+
+###
+curl -X DELETE http://localhost:5000/api/items/4 ### Berfungsi Menghapus isi Tabel sesuai nomor id
+
+###
+curl -X PUT -H "Content-Type: application/json" \
+    -d '{"name": "Updated Item","description":"new description"}' \
+    http://localhost:5000/api/items/6 ### Berfungsi Menedit isi Tabel sesuai nomor id
+
+
