@@ -1,21 +1,21 @@
-
-
-import psycopg2 # type: ignore
+import os
+import psycopg2
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-# Tambahkan di bagian atas file sebelum deklarasi route
+# Fungsi untuk koneksi ke database PostgreSQL
 def get_db_connection():
     conn = psycopg2.connect(
-        host="localhost",
-        database="testing_db",
-        user="student",
-        password="12345"
+        host=os.environ.get("DB_HOST", "db"),
+        database=os.environ.get("DB_NAME", "testing_db"),
+        user=os.environ.get("DB_USER", "student"),
+        password=os.environ.get("DB_PASSWORD", "12345")
     )
     return conn
 
+# Inisialisasi Flask
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 @app.route('/')
 def home():
@@ -50,35 +50,6 @@ def create_item():
     conn.close()
 
     return jsonify({"id": new_id, "name": name, "description": description}), 201
-
-# Endpoint untuk mengupdate data dalam tabel 'items' (Penambahan Endpoint untuk fungsi UPDATE)
-@app.route('/api/items/<int:id>', methods=['PUT'])
-def update_item(id):
-    data = request.json
-    name = data['name']
-    description = data['description']
-
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("UPDATE items SET name = %s, description = %s WHERE id = %s;",(name, description, id))
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return jsonify({"id": id, "name": name, "description": description}), 200
-
-# Endpoint untuk menghapus data dari tabel 'items'  (Penambahan Endpoint untuk fungsi DELETE)
-@app.route('/api/items/<int:id>', methods=['DELETE'])
-def delete_item(id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM items WHERE id = %s;", (id,))
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return jsonify({"message": f"Item with id {id} has been deleted."}), 200
-
 
 # Jalankan Flask
 if __name__ == '__main__':

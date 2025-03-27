@@ -1,6 +1,6 @@
 # frontend/my-react-app/Dockerfile
 #FROM node:14-alpine
-FROM node:16-alpine
+FROM node:14-alpine
 WORKDIR /app
 
 COPY package*.json ./
